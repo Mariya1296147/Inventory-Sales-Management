@@ -1,0 +1,239 @@
+<div class="product-form-page">
+
+  <div class="form-container">
+
+    <!-- Header -->
+    <div class="form-header">
+
+      <div>
+
+        <span class="form-label">
+          PRODUCT MANAGEMENT
+        </span>
+
+        <h1>
+          {{ isEditMode ? 'Edit Product' : 'Add New Product' }}
+        </h1>
+
+        <p>
+          {{
+            isEditMode
+              ? 'Update your product information'
+              : 'Add a new product to your inventory'
+          }}
+        </p>
+
+      </div>
+
+      <div class="product-icon">
+        📦
+      </div>
+
+    </div>
+
+    <!-- Loading -->
+    @if (loading) {
+
+      <div class="loading-box">
+
+        <div class="loader"></div>
+
+        <p>
+          Please wait...
+        </p>
+
+      </div>
+
+    }
+
+    <!-- Form -->
+    @if (!loading) {
+
+      <!-- Error Message -->
+      @if (errorMessage) {
+
+        <div class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+
+      }
+
+      <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+
+        <!-- Product Name -->
+        <div class="form-group">
+
+          <label for="name">
+            Product Name
+          </label>
+
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="Enter product name"
+            class="form-control"
+          >
+
+          @if (
+            productForm.get('name')?.invalid &&
+            productForm.get('name')?.touched
+          ) {
+
+            <small class="error">
+              Product name is required.
+            </small>
+
+          }
+
+        </div>
+
+        <!-- Price & Quantity -->
+        <div class="form-row">
+
+          <!-- Price -->
+          <div class="form-group">
+
+            <label for="price">
+              Price
+            </label>
+
+            <div class="price-input">
+
+              <span>৳</span>
+
+              <input
+                id="price"
+                type="number"
+                formControlName="price"
+                placeholder="0"
+                min="0"
+              >
+
+            </div>
+
+            @if (
+              productForm.get('price')?.invalid &&
+              productForm.get('price')?.touched
+            ) {
+
+              <small class="error">
+                Please enter a valid price.
+              </small>
+
+            }
+
+          </div>
+
+          <!-- Quantity -->
+          <div class="form-group">
+
+            <label for="quantity">
+              Quantity
+            </label>
+
+            <input
+              id="quantity"
+              type="number"
+              formControlName="quantity"
+              placeholder="Enter quantity"
+              min="1"
+              class="form-control"
+            >
+
+            @if (
+              productForm.get('quantity')?.invalid &&
+              productForm.get('quantity')?.touched
+            ) {
+
+              <small class="error">
+                Quantity must be at least 1.
+              </small>
+
+            }
+
+          </div>
+
+        </div>
+
+        <!-- FILE INPUT -->
+
+        <input
+          type="file"
+          class="form-control"
+          multiple
+          accept="image/*"
+          (change)="onFilesSelected($event)"
+        >
+
+        <div
+          *ngIf="imagePreviews.length > 0"
+          class="row mt-3"
+        >
+
+          <div
+            *ngFor="
+              let image of imagePreviews;
+              let i = index
+            "
+            class="col-6 col-md-4 mb-3"
+          >
+
+            <div class="image-box">
+
+              <img
+                [src]="image"
+                class="preview-image"
+                width="150"
+                height="150"
+                alt="Product image"
+              >
+
+              <button
+                type="button"
+                class="btn btn-danger btn-sm remove-btn"
+                (click)="removeFile(i)"
+              >
+                ×
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+
+          <button
+            type="button"
+            class="btn-cancel"
+            (click)="cancel()"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="btn-save"
+            [disabled]="productForm.invalid || loading"
+          >
+
+            {{
+              isEditMode
+                ? 'Update Product'
+                : 'Save Product'
+            }}
+
+          </button>
+
+        </div>
+
+      </form>
+
+    }
+
+  </div>
+
+</div>

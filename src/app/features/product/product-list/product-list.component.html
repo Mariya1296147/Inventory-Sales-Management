@@ -1,0 +1,317 @@
+<div class="product-page">
+
+  <!-- Header -->
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <span class="page-label">
+        PRODUCT MANAGEMENT
+      </span>
+
+      <h1>
+        Product List
+      </h1>
+
+      <p>
+        Manage all products from one place.
+      </p>
+
+    </div>
+
+    <a routerLink="/products/add" class="add-product-btn">
+
+      <span>+</span>
+
+      Add Product
+
+    </a>
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (loading) {
+
+  <div class="state-card">
+
+    <div class="loader"></div>
+
+    <h3>
+      Loading Products...
+    </h3>
+
+    <p>
+      Please wait while products are loading.
+    </p>
+
+  </div>
+
+  }
+
+
+  <!-- Error -->
+  @if (!loading && errorMessage) {
+
+  <div class="state-card error-state">
+
+    <div class="state-icon">
+      !
+    </div>
+
+    <h3>
+      Unable to Load Products
+    </h3>
+
+    <p>
+      {{ errorMessage }}
+    </p>
+
+    <button type="button" class="retry-btn" (click)="loadProducts()">
+
+      Try Again
+
+    </button>
+
+  </div>
+
+  }
+
+
+  <!-- Product List -->
+  @if (
+  !loading &&
+  !errorMessage &&
+  products.length > 0
+  ) {
+
+  <div class="product-summary">
+
+    <div>
+
+      <span class="summary-label">
+        TOTAL PRODUCTS
+      </span>
+
+      <strong>
+        {{ products.length }}
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <div class="table-container">
+
+    <div class="table-responsive">
+
+      <table class="product-table">
+
+        <thead>
+
+          <tr>
+
+            <th>
+              ID
+            </th>
+
+            <th>
+              Product Image
+            </th>
+
+            <th>
+              Product Name
+            </th>
+
+            <th>
+              Quantity
+            </th>
+
+            <th>
+              Price
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th>
+              Actions
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (
+          product of products;
+          track product.id
+          ) {
+
+          <tr>
+
+            <td>
+              #{{ product.id }}
+            </td>
+
+
+            <td>
+
+              <div *ngIf="getProductImages(product).length; 
+              else emptyProductImage" class="product-image-gallery">
+
+                <button *ngFor="
+                    let imageUrl of getProductImages(product); let imageIndex = index" 
+                    type="button" class="product-image-button" (click)="openImageViewer(imageUrl, product.name, 
+                  imageIndex)" [attr.aria-label]="
+                    'View image ' +
+                    (imageIndex + 1) +
+                    ' of ' +
+                    product.name
+                  ">
+
+                  <img [src]="imageUrl" [alt]="product.name + ' 
+                   image ' + (imageIndex + 1)" class="product-thumbnail" width="60" height="60">
+
+                </button>
+
+              </div>
+
+
+              <ng-template #emptyProductImage>
+
+                <div class="no-image">
+
+                  <i class="fas fa-image text-muted"></i>
+
+                </div>
+
+              </ng-template>
+
+            </td>
+
+
+            <td>
+
+              <div class="product-name">
+
+                <div class="product-icon-small">
+                  📦
+                </div>
+
+                <strong>
+                  {{ product.name }}
+                </strong>
+
+              </div>
+
+            </td>
+
+
+            <td>
+              {{ product.quantity }}
+            </td>
+
+
+            <td>
+
+              <strong class="price">
+                ৳{{ product.price }}
+              </strong>
+
+            </td>
+
+
+            <td>
+
+              @if (product.quantity > 0) {
+
+              <span class="stock-badge in-stock">
+                In Stock
+              </span>
+
+              } @else {
+
+              <span class="stock-badge out-stock">
+                Out of Stock
+              </span>
+
+              }
+
+            </td>
+
+
+            <td>
+
+              <div class="action-buttons">
+
+                <a [routerLink]="[
+                    '/products/edit',
+                    product.id
+                  ]" class="edit-btn">
+
+                  Edit
+
+                </a>
+
+
+                <button type="button" class="delete-btn" (click)="deleteProduct(product.id!)">
+
+                  Delete
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  }
+
+
+  <!-- Empty -->
+  @if (
+  !loading &&
+  !errorMessage &&
+  products.length === 0
+  ) {
+
+  <div class="state-card">
+
+    <div class="empty-icon">
+      📦
+    </div>
+
+    <h3>
+      No Products Found
+    </h3>
+
+    <p>
+      You haven't added any products yet.
+    </p>
+
+    <a routerLink="/products/add" class="empty-btn">
+
+      Add Your First Product
+
+    </a>
+
+  </div>
+
+  }
+
+</div>
